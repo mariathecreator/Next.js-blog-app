@@ -60,35 +60,42 @@ export default function Home({ posts = [] }: HomeProps) {
                       {new Date(post.createdAt).toDateString()}
                     </p>
                   </div>
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/edit/${post._id}`}
+                      className="text-xs text-yellow-300 hover:text-yellow-200 border border-yellow-500/40 rounded px-2 py-1"
+                    >
+                      Edit
+                    </Link>
 
-                  {/* 🗑️ Delete button */}
-                  <button
-                    className="text-xs text-red-400 hover:text-red-300 border border-red-500/40 rounded px-2 py-1"
-                    onClick={async () => {
-                      const ok = confirm("Are you sure you want to delete this post?");
-                      if (!ok) return;
+                    <button
+                      className="text-xs text-red-400 hover:text-red-300 border border-red-500/40 rounded px-2 py-1"
+                      onClick={async () => {
+                        const ok = confirm("Are you sure you want to delete this post?");
+                        if (!ok) return;
 
-                      try {
-                        const res = await fetch(`/api/posts/${post._id}`, {
-                          method: "DELETE",
-                        });
+                        try {
+                          const res = await fetch(`/api/posts/${post._id}`, {
+                            method: "DELETE",
+                          });
 
-                        if (!res.ok) {
-                          const data = await res.json().catch(() => ({}));
-                          alert(data.message || "Failed to delete post");
-                          return;
+                          if (!res.ok) {
+                            const data = await res.json().catch(() => ({}));
+                            alert(data.message || "Failed to delete post");
+                            return;
+                          }
+
+                          window.location.reload();
+                        } catch (err) {
+                          console.error(err);
+                          alert("Something went wrong deleting the post");
                         }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
 
-                        // quick and simple: reload the page to refresh list
-                        window.location.reload();
-                      } catch (err) {
-                        console.error(err);
-                        alert("Something went wrong deleting the post");
-                      }
-                    }}
-                  >
-                    Delete
-                  </button>
                 </div>
 
                 <Link
